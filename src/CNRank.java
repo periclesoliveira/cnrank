@@ -1,6 +1,6 @@
 /*************************************************************************
- *  Compilation: javac CNIGen
- *  Execution:    java CNIGen 
+ *  Compilation: javac CNRank
+ *  Execution:    java CNRank 
  *  Author: Pericles Oliveira
  *  
  *  Remark: this is, perhaps, easier by counting from 0 to 2^N - 1 by 1
@@ -50,7 +50,7 @@ import java.io.BufferedReader;
 
 import java.lang.Math;
 
-public class ModCNGen {
+public class CNRank {
  
     private static ArrayList<ArrayList<String>> terminalSets 			= new ArrayList<ArrayList<String>>();
     private static HashMap<String,HashMap<String,Integer>> termIndexTuples  	= new HashMap<String, HashMap<String,Integer>>();
