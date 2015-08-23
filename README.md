@@ -17,8 +17,10 @@ Setup before usage:
 \#Setup the CLASSPATH in your /etc/profile
  e.g(export CLASSPATH=/home/ubuntu/scngen/postgresql-9.3-1100.jdbc41.jar:/usr/lib/jvm/java-7-openjdk-amd64/lib/tools.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar:/usr/share/tomcat7/lib/servlet-api.jar:.)
 
-\#Create the git Repository in your laptop or server
+\#Create the git Repository in your laptop or server:
+
 git init
+
 git clone https://github.com/periclesoliveira/cnrank
 
 CNRank Usage:
