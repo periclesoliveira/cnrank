@@ -6,20 +6,20 @@ database using a probabilistic Bayesian model we have developed.
 
 Setup before usage:
 ====================
-#Install the postgresql database
-#Create one database (e.g: from Coffman datasets available in dataset folder)
-#Populate the tables
-# download the postgresql-jdbc
-#Setup the CLASSPATH in your /etc/profile
+\#Install the postgresql database
+\#Create one database (e.g: from Coffman datasets available in dataset folder)
+\#Populate the tables
+\# download the postgresql-jdbc
+\#Setup the CLASSPATH in your /etc/profile
  e.g(export CLASSPATH=/home/ubuntu/scngen/postgresql-9.3-1100.jdbc41.jar:/usr/lib/jvm/java-7-openjdk-amd64/lib/tools.jar:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar:/usr/share/tomcat7/lib/servlet-api.jar:.)
 
 CNRank Usage:
 ===================
-# vi config.properties
+\# vi config.properties
   *this file contains the database name and username/password used to connect in this database. The last field is the hostname, in case of remote address put the dns name or IP Address used to access postgresql database.
 
-#javac CNRank.java
-#java CNRank
+\#javac CNRank.java
+\#java CNRank
 
 Example Usage
 ===================
