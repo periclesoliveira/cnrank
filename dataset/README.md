@@ -1,0 +1,1 @@
+Datasets are dumped from PostgreSQL. Some commands may not be supported by other relational database management systems. To reduce time when loading the data, it is recommended that the schema file be split so indexes are created after loading the data. 
