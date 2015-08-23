@@ -1,0 +1,1 @@
+http://www.cs.virginia.edu/~jmc7tp/projects/search/cikm2010/wikipedia2008_subset-schema.pgsql.bz2
