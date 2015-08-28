@@ -1253,7 +1253,7 @@ public class CNRank {
 	  System.out.println("========== QUERY MATCHES RANKED ==========");
           for (Double peso: pesos) {
 	    ++totalQM;
-            if(topk<10000) {
+            if(topk<5) {
 		System.out.println(QMRanked.get(peso)+"("+peso+")");
 		distributions.add(QMRanked.get(peso));
 	    }
