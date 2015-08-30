@@ -50,7 +50,7 @@ import java.io.BufferedReader;
 
 import java.lang.Math;
 
-public class CNRank {
+public class ModCNGen {
     private static Integer nroCNs=0;
     private static ArrayList<ArrayList<String>> terminalSets 			= new ArrayList<ArrayList<String>>();
     private static HashMap<String,HashMap<String,Integer>> termIndexTuples  	= new HashMap<String, HashMap<String,Integer>>();
