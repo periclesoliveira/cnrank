@@ -27,6 +27,7 @@
 	import java.util.regex.Pattern;
 	import java.util.HashSet;
 	import java.util.Set;
+	import java.util.Vector;
 	import java.util.Map;
 	import java.util.SortedMap;
 	import java.util.TreeMap;
@@ -53,6 +54,7 @@
 	public class CNRank {
 	    private static Integer nroCNs=0;
 	    private static ArrayList<ArrayList<String>> terminalSets 			= new ArrayList<ArrayList<String>>();
+	    private static ArrayList<String> SQLs					= new ArrayList<String>();
 	    private static HashMap<String,HashMap<String,Integer>> termIndexTuples  	= new HashMap<String, HashMap<String,Integer>>();
 	    private static HashMap<String,HashMap<Integer,Integer>> termIndex          	= new HashMap<String, HashMap<Integer,Integer>>();
 	    private static List<List<String>>           distributions			= new ArrayList<List<String>>();
@@ -740,6 +742,38 @@
 		}
 		return G;
 	    }
+
+	    public static void evaluateCN(Connection conn,String CN) throws SQLException
+            {
+                try {
+                        Statement st            	= conn.createStatement();
+                        ResultSet rs            	= st.executeQuery(CN);
+			Vector<String> columnNames 	= new Vector<String>();
+			if (rs != null) {
+        			ResultSetMetaData columns = rs.getMetaData();
+        			int i = 0;
+        			while (i < columns.getColumnCount()) {
+         				i++;
+          				System.out.print(columns.getColumnName(i) + "\t");
+          				columnNames.add(columns.getColumnName(i));
+        			}
+        			System.out.print("\n");
+
+ 			       while (rs.next()) {
+          			for (i = 0; i < columnNames.size(); i++) {
+            				System.out.print(rs.getString(columnNames.get(i))+ "\t");
+
+          			}
+          			System.out.print("\n");
+        		      }
+      		     }
+                } catch (SQLException se) {
+                  System.out.println("Couldn't connect: print out a stack trace and exit.");
+                    se.printStackTrace();
+                    System.exit(1);
+                }
+            }
+
 	    private static boolean isValidCN(String match) {
 		String[] termSet        = match.split("="); //e.g: name.name
 		List<String> query	= new ArrayList<String>(q.values());
@@ -784,6 +818,7 @@
 	       String match 	  		= new String();
 	       Integer pairCheck 		= 0;
 	       String pair 			= new String();
+	       String SQL			= new String();
 	       //to_tsvector('english',name) @@ to_tsquery('english','denzel,washington');
 	       for (Iterator<String> i = aDeque.iterator(); i.hasNext();) {
 		 match = i.next();
@@ -818,12 +853,18 @@
 	       }
 	       int contador=0;
 	       System.out.print("CN"+nroCNs+": SELECT * FROM ");
+	       SQL="SELECT * FROM ";
 	       for(String rel:relations.keySet()) {
-		  System.out.print(rel);
+		  System.out.print(rel);SQL+=rel;
 		  ++contador;
-		  if(contador<relations.size()) System.out.print(",");
+		  if(contador<relations.size()) { 
+			System.out.print(",");
+			SQL+=",";
+		  }
 	       }
 	       System.out.println(" WHERE "+WHERECLAUSE);
+	       SQL+=" WHERE "+WHERECLAUSE;
+	       SQLs.add(SQL);
 	    }
 
 	     private static String getRelation(String queryMatch) {
@@ -1091,8 +1132,8 @@
                 String[] termSetPart2    = termSet2[1].split("_");//e.g: denzel_washington
                 String[] tablePart2      = termSet2[0].split("\\.");//e.g: name
                 for(String termPart2: termSetPart2) {
-                  /* if(terms.contains(termPart2)) validCovering=false;
-                   else*/ terms.add(termPart2);
+                   if(terms.contains(termPart2)) validCovering=false;
+                   else terms.add(termPart2);
                 }
               }
             }
@@ -1314,8 +1355,8 @@
 		        if(accwjk==0.0) accwjk = wjk;
 			else accwjk *= wjk;
 		}
-		//scorei = accwjk * 1/match.size();
-		scorei=nroMatches; // just before paper vldb
+		scorei = accwjk * 1/match.size();
+		//scorei=nroMatches; // just before paper vldb
 	    }	
 	    // check RLR condition
 	    for(Integer RLRcount:RLR.values())
@@ -1339,7 +1380,7 @@
 	  System.out.println("========== QUERY MATCHES RANKED ==========");
           for (Double peso: pesos) {
 	    ++totalQM;
-            if(topk<4) {
+            if(topk<10000) {
 		System.out.println(QMRanked.get(peso)+"("+peso+")");
 		distributions.add(QMRanked.get(peso));
 	    }
@@ -1350,6 +1391,7 @@
          //print all partial valid CNs
 	 System.out.println("====== CANDIDATE NETWORKS  ================");
          nroCNs = 0;
+	 SQLs.clear();
          for(List<String> queryMatch: distributions)
          {
             Graph G   = new Graph();  // need to be improve it, avoid to get all time the schemagraph
@@ -1378,6 +1420,15 @@
 	 System.out.println("Total de CNs:"+nroCNs);
          long timeTIF=System.currentTimeMillis() ;
          System.out.println("Time to generate CNs="+(timeTIF-timeTI1)+"\n");
+	 System.out.println("================= EVALUATE CN =============");
+         try {
+		evaluateCN(conn,SQLs.get(0));
+	 } catch (SQLException se) {
+            System.out.println("Couldn't connect: print out a stack trace and exit.");
+               se.printStackTrace();
+               System.exit(1);
+         }
+
       }
    }
 }
